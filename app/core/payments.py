@@ -5,9 +5,15 @@ from app.db.schemas import VirtualCard
 from app.db import db
 
 
-def physical_card_info():
-    # todo json blob, pass into function below
-    return {}
+def physical_card_info(provider, version, number, cvv, exp, name):
+    return {
+            "provider": provider,
+            "version": version,
+            "number": number,
+            "cvv": cvv,
+            "exp": exp,
+            "name": name
+            }
 
 
 def add_physicalcard_to_db(card_id, data, user_id):
