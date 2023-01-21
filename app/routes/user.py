@@ -29,6 +29,7 @@ def register():
     req = Context()
     json = req.json
     pw = json.pop("password", None)
+    print(req.json)
     body = UserIn(**req.json, password_hash=pw, is_admin=False)
     js = create_user(body, return_json=True)
     return {"user_data": js}
@@ -71,7 +72,7 @@ def refresh_token():
 
 
 @router.get("/<user>/")
-@api.lax
+@api.strict
 def user_details(user: str):
     req = Context()
     auth = req.auth
@@ -80,6 +81,8 @@ def user_details(user: str):
         if not auth.user:
             raise AppException("Not authenticated", 401)
         user = auth.user
+    if user != auth.user:
+        raise AppException("Not authorized")
     user_data = get_user_by_username(user)
     show_secure = user_data.user == auth.user or auth.is_admin
     model = (

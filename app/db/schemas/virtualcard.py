@@ -13,16 +13,17 @@ class VirtualCard(db.Model):
     active: bool = db.Column(db.BOOLEAN, nullable=False)
 
     def __init__(
-            self,
-            card_id: str = None,
-            id_: str = None,
-            card_number: str = None,
-            card_cvv: str = None,
-            card_expiry: str = None,
-            card_address: str = None,
-            card_zipcode: str = None,
-            card_limit: str = None,
-            active: bool = None):
+        self,
+        card_id: str = None,
+        id_: str = None,
+        card_number: str = None,
+        card_cvv: str = None,
+        card_expiry: str = None,
+        card_address: str = None,
+        card_zipcode: str = None,
+        card_limit: str = None,
+        active: bool = None,
+    ):
         self.card_id = card_id
         self.id_ = id_
         self.card_number = card_number

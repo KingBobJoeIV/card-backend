@@ -20,8 +20,7 @@ PasswordType = constr(min_length=4)
 
 
 class AuthModel(BaseModel):
-    user: constr(strip_whitespace=True, to_lower=True, min_length=3, max_length=50)
-    email: EmailStr()
+    user: constr(strip_whitespace=True, to_lower=True, min_length=3, max_length=500)
 
 
 class LoginModel(AuthModel):
@@ -30,6 +29,7 @@ class LoginModel(AuthModel):
 
 class _UserBase(AuthModel):
     name: constr(strip_whitespace=True, max_length=100)
+    email: EmailStr
 
     @validator("user")
     def validate_user(cls, user: str):
@@ -53,8 +53,9 @@ class UserIn(_UserBase):
 
 
 class UserOut(CustomBase):
-    id_ = str
+    id_: str
     user: str
+    email: str
     name: str
     is_admin: bool
 

@@ -1,4 +1,5 @@
 from ..base import db
+from secrets import token_urlsafe
 
 
 class PhysicalCard(db.Model):
@@ -8,12 +9,12 @@ class PhysicalCard(db.Model):
     active: bool = db.Column(db.BOOLEAN, nullable=False)
 
     def __init__(
-            self,
-            card_id: str = None,
-            blob: str = None,
-            id_: str = None,
-            active: bool = None):
-        self.card_id = card_id
+        self,
+        blob: str = None,
+        id_: str = None,
+        active: bool = None,
+    ):
+        self.card_id = token_urlsafe(20)
         self.blob = blob
         self.id_ = id_
         self.active = active

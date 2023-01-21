@@ -16,5 +16,6 @@ def _create(col, batch, return_json):
 
 def create_user(user_model: UserIn, batch=False, return_json=False):
     u = user_model
-    col = User(name=u.name, user=u.user, password_hash=u.password_hash)
+    col = User(name=u.name, user=u.user, email=u.email, password_hash=u.password_hash)
+
     return _create(col, batch, return_json)

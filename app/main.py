@@ -2,7 +2,7 @@ from flask import Flask
 from floodgate.flask import guard
 
 from app.db import db
-from app.internal.constants import DATABASE_URL, IS_PROD
+from app.internal.constants import DATABASE_URL
 from app.internal.helpers import ip_resolver
 from app.internal.helpers.client_errors import method_not_allowed, not_found
 from app.middlewares import Middleware, cors, process_time

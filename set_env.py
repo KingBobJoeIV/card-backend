@@ -1,10 +1,10 @@
 # pylint:skip-file
-from os import environ, getcwd
-from os.path import join, isfile
 from json import load
+from os import environ, getcwd
+from os.path import isfile, join
+from pathlib import Path
 
 _CONFIG_PATH = join(getcwd(), ".env.json")
-from pathlib import Path
 
 psql = Path.home() / ".postgresql"
 psql.mkdir(exist_ok=True)
@@ -17,8 +17,9 @@ def setup_env() -> None:
             js: dict = load(f)
             environ.update(js)
 
-    import requests
     import os
+
+    import requests
 
     if loc.exists():
         return
