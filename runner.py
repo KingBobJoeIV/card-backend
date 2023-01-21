@@ -1,7 +1,7 @@
 from set_env import setup_env
 
-setup_env()
 
+setup_env()
 
 from app.main import app as core_app
 

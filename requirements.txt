@@ -8,3 +8,5 @@ psycopg2-binary==2.8.6
 pyjwt[crypto]==2.1.0
 requests==2.25.1
 SQLAlchemy==1.4.17
+pydantic==1.10.4
+sqlalchemy-cockroachdb==1.4.4

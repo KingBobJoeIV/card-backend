@@ -1,3 +1,4 @@
+#pylint: skip-file
 import subprocess
 
 GUNICORN_COMMANDS = (
