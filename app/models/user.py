@@ -7,7 +7,7 @@ from app.internal.helpers import sanitize
 
 from app.exceptions import AppException
 from app.models.base import CustomBase
-from pydantic import validator, constr
+from pydantic import validator, constr, EmailStr
 
 
 class UserSession(BaseModel):
@@ -21,6 +21,7 @@ PasswordType = constr(min_length=4)
 
 class AuthModel(BaseModel):
     user: constr(strip_whitespace=True, to_lower=True, min_length=3, max_length=50)
+    email: EmailStr()
 
 
 class LoginModel(AuthModel):

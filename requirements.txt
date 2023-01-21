@@ -10,3 +10,4 @@ requests==2.25.1
 SQLAlchemy==1.4.17
 pydantic==1.10.4
 sqlalchemy-cockroachdb==1.4.4
+email-validator==1.3.0

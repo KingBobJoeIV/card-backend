@@ -1,3 +1,4 @@
+# pylint:skip-file
 from os import environ, getcwd
 from os.path import join, isfile
 from json import load
