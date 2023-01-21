@@ -10,6 +10,7 @@ from app.internal.security.auth_token import (
     get_bearer_token,
     regenerate_access_token,
 )
+from app.db.queries.cards import get_physical_cards
 from app.internal.security.danger import create_token, decode_token
 from app.models.user import (
     LoginModel,
@@ -112,7 +113,6 @@ def edit(user: str):
 
 @router.get("/cards/physical/")
 @api.strict
-def get_physical_cards(user):
+def api_get_physical_cards():
     req = Context()
-    
-
+    return [x.as_json for x in get_physical_cards(req.auth.user_id)]
