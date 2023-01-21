@@ -7,13 +7,13 @@ from app.db import db
 
 def physical_card_info(provider, version, number, cvv, exp, name):
     return {
-            "provider": provider,
-            "version": version,
-            "number": number,
-            "cvv": cvv,
-            "exp": exp,
-            "name": name
-            }
+        "provider": provider,
+        "version": version,
+        "number": number,
+        "cvv": cvv,
+        "exp": exp,
+        "name": name,
+    }
 
 
 def add_physicalcard_to_db(card_id, data, user_id):
@@ -57,5 +57,5 @@ def choose_card_for_payment(category, amount, user_id):
 
 def charge_virtual_card(user_id, amount):
     card = VirtualCard.query.filter_by(user_id=user_id).first()
-    setattr(card, "amount", card.amount-amount)
+    setattr(card, "amount", card.amount - amount)
     db.session.commit()

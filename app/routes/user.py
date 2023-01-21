@@ -108,3 +108,11 @@ def edit(user: str):
     json = user_data.as_json
     commit()
     return json
+
+
+@router.get("/cards/physical/")
+@api.strict
+def get_physical_cards(user):
+    req = Context()
+    
+

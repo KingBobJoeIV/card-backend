@@ -11,6 +11,7 @@ class VirtualCard(db.Model):
     card_zipcode: str = db.Column(db.TEXT, nullable=False)
     card_limit: str = db.Column(db.TEXT, nullable=False)
     active: bool = db.Column(db.BOOLEAN, nullable=False)
+    config:dict = db.Column(db.JSON,default={})
 
     def __init__(
         self,
