@@ -28,12 +28,16 @@ def add_virtualcard_to_db(card_id, number, cvv, expiry, address, zipcode):
     db.session.commit()
 
 
-def remove_physicalcard(card_id, user_id):
-    ...
+def remove_physicalcard(card_id):
+    card = PhysicalCard.query.filter_by(card_id=card_id).first()
+    setattr(card, "active", False)
+    db.session.commit()
 
 
-def remove_virtualcard(card_id, user_id):
-    ...
+def remove_virtualcard(card_id):
+    card = PhysicalCard.query.filter_by(card_id=card_id).first()
+    setattr(card, "active", False)
+    db.session.commit()
 
 
 def choose_card_for_payment(category, amount, user_id):
@@ -54,5 +58,4 @@ def choose_card_for_payment(category, amount, user_id):
 def charge_virtual_card(user_id, amount):
     card = VirtualCard.query.filter_by(user_id=user_id).first()
     setattr(card, "amount", card.amount-amount)
-    flag_modified(card, "amount")
     db.session.commit()

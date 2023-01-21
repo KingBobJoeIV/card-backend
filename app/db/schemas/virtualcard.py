@@ -9,7 +9,8 @@ class VirtualCard(db.Model):
     card_expiry: str = db.Column(db.TEXT, nullable=False)
     card_address: str = db.Column(db.TEXT, nullable=False)
     card_zipcode: str = db.Column(db.TEXT, nullable=False)
-    card_limit: str = db.Column(db.TEXT)
+    card_limit: str = db.Column(db.TEXT, nullable=False)
+    active: bool = db.Column(db.BOOLEAN, nullable=False)
 
     def __init__(
             self,
@@ -20,7 +21,8 @@ class VirtualCard(db.Model):
             card_expiry: str = None,
             card_address: str = None,
             card_zipcode: str = None,
-            card_limit: str = None):
+            card_limit: str = None,
+            active: bool = None):
         self.card_id = card_id
         self.id_ = id_
         self.card_number = card_number
@@ -29,6 +31,7 @@ class VirtualCard(db.Model):
         self.card_address = card_address
         self.card_zipcode = card_zipcode
         self.card_limit = card_limit
+        self.active = active
 
     @property
     def as_json(self):
@@ -41,4 +44,5 @@ class VirtualCard(db.Model):
             "card_address": self.card_address,
             "card_zipcode": self.card_zipcode,
             "card_limit": self.card_limit,
+            "active": self.active,
         }
