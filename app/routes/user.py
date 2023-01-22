@@ -175,8 +175,8 @@ def api_create_virtual_card():
         req.auth.user_id,
         req.auth.name,
         c,
-        str(random.randint(0, 999)).zfill(3),
-        str(random.randint(0, 12)).zfill(2)
+        str(random.randint(1, 999)).zfill(3),
+        str(random.randint(1, 12)).zfill(2)
         + "/"
         + str(random.randint(23, 30)).zfill(2),
         "1 E Ohio St Indianapolis, IN",
