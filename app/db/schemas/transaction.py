@@ -4,7 +4,7 @@ from ..base import db
 class Transaction(db.Model):
     tx_id: str = db.Column(db.TEXT, unique=True, nullable=False, primary_key=True)
     card_id: str = db.Column(db.TEXT, nullable=False)
-    date: str = db.Column(db.DATE, nullable=False)
+    date: str = db.Column(db.JSON, nullable=False)
     amount: str = db.Column(db.TEXT, nullable=False)
     category: str = db.Column(db.TEXT, nullable=False)
     name: str = db.Column(db.TEXT, nullable=False)

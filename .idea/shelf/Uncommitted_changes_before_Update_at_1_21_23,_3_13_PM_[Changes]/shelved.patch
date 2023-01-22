@@ -1,0 +1,79 @@
+Index: app/core/payments.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/core/payments.py b/app/core/payments.py
+new file mode 100644
+--- /dev/null	(date 1674331981830)
++++ b/app/core/payments.py	(date 1674331981830)
+@@ -0,0 +1,50 @@
++import json
++from sqlalchemy.orm.attributes import flag_modified
++from app.db.schemas import PhysicalCard
++from app.db.schemas import VirtualCard
++from app.db import db
++
++
++def physical_card_info():
++    # todo json blob, pass into function below
++    return {}
++
++
++def add_physicalcard_to_db(card_id, data, user_id):
++    row = PhysicalCard(card_id, data, user_id)
++    db.session.add(row)
++    db.session.commit()
++
++
++def add_virtualcard_to_db(card_id, number, cvv, expiry, address, zipcode):
++    row = VirtualCard(card_id, number, cvv, expiry, address, zipcode)
++    db.session.add(row)
++    db.session.commit()
++
++
++def remove_physicalcard(card_id, user_id):
++    ...
++
++
++def remove_virtualcard(card_id, user_id):
++    ...
++
++
++def choose_card_for_payment(category, amount, user_id):
++    f = open("card_benefits.json")
++    benefits = json.load(f)
++    physical_cards = PhysicalCard.query.filter_by(id_=user_id).all()
++    value = []
++    for card in physical_cards:
++        if category in benefits[card.name]:
++            # the value/dollar we calculated at some point
++            if benefits[card.name][card.blob["credit"]] >= amount:
++                value.append((benefits[card.blob[card.name]][category], card.card_id))
++    if value:
++        return max(value)[1]
++    return None
++
++
++def charge_virtual_card(user_id, amount):
++    card = VirtualCard.query.filter_by(user_id=user_id).first()
++    card.amount =
+Index: app/db/schemas/__init__.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from .user import User\nfrom .physicalcard import PhysicalCard
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/db/schemas/__init__.py b/app/db/schemas/__init__.py
+--- a/app/db/schemas/__init__.py	(revision fdec5f365e98e593bdba6637ca822143c9e7018c)
++++ b/app/db/schemas/__init__.py	(date 1674329146646)
+@@ -1,2 +1,3 @@
+ from .user import User
+-from .physicalcard import PhysicalCard
+\ No newline at end of file
++from .physicalcard import PhysicalCard
++from .virtualcard import VirtualCard
+\ No newline at end of file
+diff --git a/app/core/card_benefits.json b/app/core/card_benefits.json
+new file mode 100644

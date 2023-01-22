@@ -6,7 +6,7 @@ class VirtualCard(db.Model):
     id_: str = db.Column(db.TEXT, nullable=False)
     card_number: str = db.Column(db.TEXT, nullable=False)
     card_cvv: str = db.Column(db.TEXT, nullable=False)
-    card_expiry: str = db.Column(db.TEXT, nullable=False)
+    card_expiry: str = db.Column(db.JSON, nullable=False)
     card_address: str = db.Column(db.TEXT, nullable=False)
     card_zipcode: str = db.Column(db.TEXT, nullable=False)
     card_limit: str = db.Column(db.TEXT, nullable=False)
