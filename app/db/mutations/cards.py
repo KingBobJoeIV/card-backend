@@ -138,7 +138,7 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
     flag_modified(virtual_card, "config")
     row = Transaction(
         card_id=virtual_card_id,
-        date=datetime.datetime.now(),
+        date=datetime.now(),
         amount=original_amount,
         category=category,
         name=company,
