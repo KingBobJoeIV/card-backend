@@ -4,6 +4,7 @@ from app.db.mutations.cards import (
     remove_physicalcard,
     edit_physical_card,
     add_virtualcard_to_db,
+    remove_virtualcard,
 )
 from app.db.mutations.util import commit
 from app.db.queries.user import get_user_by_username
@@ -181,3 +182,11 @@ def api_create_virtual_card():
         "46204",
         json,
     )
+
+
+@router.delete("/cards/virtual/<card_id>")
+@api.strict
+def api_delete_virtual_card(card_id):
+    print(card_id)
+    remove_virtualcard(card_id)
+    return {}

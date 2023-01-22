@@ -5,6 +5,7 @@ import datetime
 
 from app.db import db
 from app.db.schemas import PhysicalCard, VirtualCard, Transaction
+from pathlib import Path
 
 
 def physical_card_info(provider, version, number, cvv, exp, name, limit):
@@ -59,16 +60,18 @@ def edit_physical_card(card_id: str, blob):
 
 
 def remove_virtualcard(card_id):
-    card = PhysicalCard.query.filter_by(card_id=card_id).first()
+
+    card = VirtualCard.query.filter_by(card_id=card_id).first()
     card.active = False
     db.session.commit()
 
 
+f = Path() / "app" / "core/card_benefits.json"
+benefits = json.loads(f.read_text())
+
+
 def choose_card_for_payment(company, category, amount, user_id, virtual_card_id):
     original_amount = amount
-    f = open("card_benefits.json")
-    benefits = json.load(f)
-    f.close()
     virtual_card = VirtualCard.query.filter_by(
         id_=user_id, card_id=virtual_card_id
     ).first()
@@ -117,11 +120,6 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
             used.append((card.card_id, amount))
             amount = 0
         flag_modified(card, "blob")
-<<<<<<< HEAD
-    virtual_card.config["spent"] += amount
-    flag_modified(virtual_card, "config")
-    row = Transaction(card_id=virtual_card_id, date=datetime.datetime.now(), amount=original_amount, category=category, name=company, cards_used=used)
-=======
     row = Transaction(
         card_id=virtual_card_id,
         date=datetime.datetime.now(),
@@ -130,7 +128,7 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
         name=company,
         cards_used=used,
     )
->>>>>>> 8d2427b611b0791cdad9d6f0ebcb2369edf52c3c
+    db.session.add(row)
     db.session.commit()
     print("purchase successful :D!")
 
