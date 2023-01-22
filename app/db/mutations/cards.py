@@ -74,13 +74,18 @@ def remove_virtualcard(card_id):
     db.session.commit()
 
 
-def find_virtualcard(name, card_number, cvv, date, zipc):
-    return VirtualCard.query.filter(
-        (VirtualCard.name) == (name),
-        VirtualCard.card_number == card_number,
-        VirtualCard.card_cvv == cvv,
-        VirtualCard.card_expiry == date,
-        VirtualCard.card_zipcode == zipc,
+def find_virtualcard(name, card_number, cvv, date, zip):
+    return VirtualCard.query.filter_by(
+        name=name,
+        card_number=card_number,
+        card_cvv=cvv,
+        card_expiry=date,
+        card_zip=zip
+        # func.lower(VirtualCard.name) == func.lower(name),
+        # VirtualCard.card_number == card_number,
+        # VirtualCard.card_cvv == cvv,
+        # VirtualCard.card_expiry == date,
+        # VirtualCard == zip,
     ).first()
 
 
