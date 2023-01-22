@@ -3,6 +3,7 @@ from app.db.mutations.cards import (
     add_physicalcard_to_db,
     remove_physicalcard,
     edit_physical_card,
+    add_virtualcard_to_db,
 )
 from app.db.mutations.util import commit
 from app.db.queries.user import get_user_by_username
@@ -16,7 +17,7 @@ from app.internal.security.auth_token import (
     get_bearer_token,
     regenerate_access_token,
 )
-from app.db.queries.cards import get_physical_cards
+from app.db.queries.cards import get_physical_cards, get_virtual_cards
 from app.internal.security.danger import create_token, decode_token
 from app.models.user import (
     LoginModel,
@@ -26,6 +27,8 @@ from app.models.user import (
     UserOutSecure,
 )
 from flask import Blueprint
+
+from app.internal.helpers.random_card import card
 
 router = Blueprint("user", __name__, url_prefix="/users")
 
@@ -122,7 +125,7 @@ def edit(user: str):
 @api.strict
 def api_get_physical_cards():
     req = Context()
-    print([x.as_json for x in get_physical_cards(req.auth.user_id)])
+
     return {"cards": [x.as_json for x in get_physical_cards(req.auth.user_id)]}
 
 
@@ -149,3 +152,31 @@ def api_patch_physical_cards(card_id):
     req = Context()
     json = req.json
     return edit_physical_card(card_id, json)
+
+
+@router.get("/cards/virtual")
+@api.strict
+def api_get_virtual_cards():
+    req = Context()
+    return {"cards": [x.as_json for x in get_virtual_cards(req.auth.user_id)]}
+
+
+@router.post("/cards/virtual/create")
+@api.strict
+def api_create_virtual_card():
+    import random
+
+    req = Context()
+    json = req.json
+    c = card()
+    return add_virtualcard_to_db(
+        req.auth.user_id,
+        c,
+        str(random.randint(0, 999)).zfill(3),
+        str(random.randint(0, 12)).zfill(2)
+        + "/"
+        + str(random.randint(23, 30)).zfill(2),
+        "1 E Ohio St Indianapolis, IN",
+        "46204",
+        json,
+    )

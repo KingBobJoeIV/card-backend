@@ -27,10 +27,14 @@ def add_physicalcard_to_db(data, user_id):
     return res
 
 
-def add_virtualcard_to_db(card_id, number, cvv, expiry, address, zipcode):
-    row = VirtualCard(card_id, number, cvv, expiry, address, zipcode, active=True)
+def add_virtualcard_to_db(id_, number, cvv, expiry, address, zipcode, config):
+    row = VirtualCard(
+        id_, number, cvv, expiry, address, zipcode, config=config, active=True
+    )
+    js = row.as_json
     db.session.add(row)
     db.session.commit()
+    return js
 
 
 def remove_physicalcard(card_id):
@@ -72,8 +76,11 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
                 ).first()
                 if physical_card.active:
                     blob = physical_card.blob
-                    if blob["expiry"]["month"] >= datetime.now().month and blob["expiry"]["year"] >= datetime.now().year:
-                        credit += (blob["limit"] - blob["spent"])
+                    if (
+                        blob["expiry"]["month"] >= datetime.now().month
+                        and blob["expiry"]["year"] >= datetime.now().year
+                    ):
+                        credit += blob["limit"] - blob["spent"]
                         heapq.heappush(
                             cards,
                             (
@@ -95,7 +102,7 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
         card = heapq.heappop(cards)
         temp = amount - (card.blob["limit"] - card.blob["spent"])
         if temp >= 0:
-            amount -= (card.blob["limit"] - card.blob["spent"])
+            amount -= card.blob["limit"] - card.blob["spent"]
             used.append((card.card_id, (card.blob["limit"] - card.blob["spent"])))
             card.blob["spent"] = card.blob["limit"]
         else:

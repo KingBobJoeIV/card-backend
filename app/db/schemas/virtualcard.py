@@ -1,4 +1,5 @@
 from ..base import db
+from secrets import token_urlsafe
 
 
 class VirtualCard(db.Model):
@@ -9,13 +10,12 @@ class VirtualCard(db.Model):
     card_expiry: str = db.Column(db.JSON, nullable=False)
     card_address: str = db.Column(db.TEXT, nullable=False)
     card_zipcode: str = db.Column(db.TEXT, nullable=False)
-    card_limit: str = db.Column(db.TEXT, nullable=False)
+    card_limit: str = db.Column(db.TEXT, nullable=False, default="@NA")
     active: bool = db.Column(db.BOOLEAN, nullable=False)
     config: dict = db.Column(db.JSON, default={})
 
     def __init__(
         self,
-        card_id: str = None,
         id_: str = None,
         card_number: str = None,
         card_cvv: str = None,
@@ -23,9 +23,10 @@ class VirtualCard(db.Model):
         card_address: str = None,
         card_zipcode: str = None,
         card_limit: str = None,
+        config: dict = None,
         active: bool = None,
     ):
-        self.card_id = card_id
+        self.card_id = token_urlsafe(20)
         self.id_ = id_
         self.card_number = card_number
         self.card_cvv = card_cvv
@@ -34,6 +35,7 @@ class VirtualCard(db.Model):
         self.card_zipcode = card_zipcode
         self.card_limit = card_limit
         self.active = active
+        self.config = config
 
     @property
     def as_json(self):
