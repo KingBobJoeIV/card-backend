@@ -5,7 +5,7 @@ from secrets import token_urlsafe
 
 class PhysicalCard(db.Model):
     card_id: str = db.Column(db.TEXT, unique=True, nullable=False, primary_key=True)
-    blob: str = db.Column(db.JSON, nullable=False)
+    blob: dict = db.Column(db.JSON, nullable=False)
     id_: str = db.Column(db.TEXT, nullable=False)
     active: bool = db.Column(db.Boolean, nullable=False, default=True)
 

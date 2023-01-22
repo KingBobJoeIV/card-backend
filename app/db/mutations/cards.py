@@ -25,6 +25,9 @@ def physical_card_info(provider, version, number, cvv, exp, name, limit):
 
 
 def add_physicalcard_to_db(data, user_id):
+    prev :list[PhysicalCard]= PhysicalCard.query.filter_by(id_=user_id).all()
+    if any(x for x in prev if x.blob['number']==data['number']):
+        raise AppException("Card already exists")
     row = PhysicalCard(data, user_id)
     res = row.as_json
     # pylint:disable=no-member
