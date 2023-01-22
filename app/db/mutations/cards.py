@@ -72,7 +72,7 @@ benefits = json.loads(f.read_text())
 
 
 def find_virtualcard(name, card_number) -> VirtualCard:
-    return VirtualCard.querty.filter_by(name=name, card_number=card_number).first()
+    return VirtualCard.query.filter_by(name=name, card_number=card_number).first()
 
 
 def choose_card_for_payment(company, category, amount, user_id, virtual_card_id):
