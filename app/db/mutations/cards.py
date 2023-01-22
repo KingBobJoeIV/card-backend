@@ -94,6 +94,8 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
             used.append((card.card_id, amount))
             amount = 0
         flag_modified(card, "blob")
+    virtual_card.config["spent"] += amount
+    flag_modified(virtual_card, "config")
     row = Transaction(card_id=virtual_card_id, date=datetime.datetime.now(), amount=original_amount, category=category, name=company, cards_used=used)
     db.session.commit()
     print("purchase successful :D!")
