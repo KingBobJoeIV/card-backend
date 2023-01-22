@@ -171,6 +171,7 @@ def api_create_virtual_card():
     c = card()
     return add_virtualcard_to_db(
         req.auth.user_id,
+        req.auth.name,
         c,
         str(random.randint(0, 999)).zfill(3),
         str(random.randint(0, 12)).zfill(2)

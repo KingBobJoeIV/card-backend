@@ -27,9 +27,16 @@ def add_physicalcard_to_db(data, user_id):
     return res
 
 
-def add_virtualcard_to_db(id_, number, cvv, expiry, address, zipcode, config):
+def add_virtualcard_to_db(id_, name, number, cvv, expiry, address, zipcode, config):
     row = VirtualCard(
-        id_, number, cvv, expiry, address, zipcode, config=config, active=True
+        id_=id_,
+        name=name,
+        card_address=address,
+        card_expiry=expiry,
+        card_cvv=cvv,
+        card_number=number,
+        card_zipcode=zipcode,
+        config=config,
     )
     js = row.as_json
     db.session.add(row)

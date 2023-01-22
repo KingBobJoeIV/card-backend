@@ -26,7 +26,7 @@ class VirtualCard(db.Model):
         card_zipcode: str = None,
         card_limit: str = None,
         config: dict = None,
-        active: bool = None,
+        active: bool = True,
     ):
         self.card_id = token_urlsafe(20)
         self.id_ = id_
@@ -38,7 +38,8 @@ class VirtualCard(db.Model):
         self.card_zipcode = card_zipcode
         self.card_limit = card_limit
         self.active = active
-        self.config = config
+        self.config = config or {}
+        self.config["spent"] = 0
 
     @property
     def as_json(self):
