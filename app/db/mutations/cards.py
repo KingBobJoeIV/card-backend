@@ -144,6 +144,7 @@ def choose_card_for_payment(
     cfg = {**virtual_card.config}
     cfg["spent"] += amount
     virtual_card.config = cfg
+    print(cfg)
     flag_modified(virtual_card, "config")
     from time import time
 
