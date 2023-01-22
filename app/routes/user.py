@@ -5,6 +5,7 @@ from app.db.mutations.cards import (
     edit_physical_card,
     add_virtualcard_to_db,
     remove_virtualcard,
+    list_transactions,
 )
 from app.db.mutations.util import commit
 from app.db.queries.user import get_user_by_username
@@ -190,3 +191,9 @@ def api_delete_virtual_card(card_id):
     print(card_id)
     remove_virtualcard(card_id)
     return {}
+
+
+@router.get("/cards/transactions")
+@api.strict
+def api_get_tx():
+    return [x.as_json for x in list_transactions(Context().auth.user_id)]

@@ -157,5 +157,5 @@ def choose_card_for_payment(
     return row.as_json
 
 
-def list_transactions(user_id):
+def list_transactions(user_id) -> list[Transaction]:
     return Transaction.query.filter_by(user_id=user_id).all()
