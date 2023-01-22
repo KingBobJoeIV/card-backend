@@ -16,7 +16,7 @@ class PhysicalCard(db.Model):
     ):
         self.card_id = token_urlsafe(20)
         self.blob = blob or {}
-        self.blob["limit"] = 5000
+        self.blob["limit"] = 500
         self.blob["spent"] = 0
         self.id_ = id_
         self.active = active
