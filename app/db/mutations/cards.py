@@ -140,9 +140,11 @@ def choose_card_for_payment(
         flag_modified(card, "blob")
     virtual_card.config["spent"] += amount
     flag_modified(virtual_card, "config")
+    from time import time
+
     row = Transaction(
         card_id=virtual_card_id,
-        date=datetime.now(),
+        date=f"{time()}",
         amount=original_amount,
         category=category,
         name=company,
