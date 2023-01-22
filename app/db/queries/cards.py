@@ -5,4 +5,4 @@ message = "cards not found"
 
 
 def get_physical_cards(user: str) -> list[PhysicalCard]:
-    return guard(PhysicalCard.filter_by(id_=user).all())
+    return PhysicalCard.query.filter_by(id_=user).all()

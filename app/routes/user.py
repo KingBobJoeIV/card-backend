@@ -1,6 +1,8 @@
 from app.db.mutations.user import create_user
+from app.db.mutations.cards import add_physicalcard_to_db
 from app.db.mutations.util import commit
 from app.db.queries.user import get_user_by_username
+
 from app.decorators.api_response import api
 from app.exceptions.app_exception import AppException
 from app.internal.context import Context
@@ -49,12 +51,13 @@ def login():
 
 
 @router.get("/-/token/refresh")
-@api.strict
+@api.lax
 def refresh_token():
     context = Context()
     headers = context.headers
     access_token = get_bearer_token(headers)
     decoded_access = decode_token(access_token)
+
     if decoded_access is None:
         refresh_token = headers.get("x-refresh-token")
         decoded_refresh = decode_token(refresh_token)
@@ -115,4 +118,14 @@ def edit(user: str):
 @api.strict
 def api_get_physical_cards():
     req = Context()
-    return [x.as_json for x in get_physical_cards(req.auth.user_id)]
+    print([x.as_json for x in get_physical_cards(req.auth.user_id)])
+    return {"cards": [x.as_json for x in get_physical_cards(req.auth.user_id)]}
+
+
+@router.put("/cards/physical/")
+@api.strict
+def api_put_physical_cards():
+    req = Context()
+    json = req.json
+
+    return add_physicalcard_to_db(json, req.auth.user_id)

@@ -6,7 +6,7 @@ class PhysicalCard(db.Model):
     card_id: str = db.Column(db.TEXT, unique=True, nullable=False, primary_key=True)
     blob: str = db.Column(db.JSON, nullable=False)
     id_: str = db.Column(db.TEXT, nullable=False)
-    active: bool = db.Column(db.BOOLEAN, nullable=False)
+    active: bool = db.Column(db.BOOLEAN, nullable=False, default=True)
 
     def __init__(
         self,
