@@ -71,8 +71,8 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
                     id_=user_id, card_id=id
                 ).first()
                 if physical_card.active:
-                    if physical_card.expiry:  # TODO
-                        blob = physical_card.blob
+                    blob = physical_card.blob
+                    if blob["expiry"]["month"] >= datetime.now().month and blob["expiry"]["year"] >= datetime.now().year:
                         credit += (blob["limit"] - blob["spent"])
                         heapq.heappush(
                             cards,
