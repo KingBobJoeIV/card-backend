@@ -84,7 +84,7 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
                         heapq.heappush(
                             cards,
                             (
-                                benefits[blob["provider"][blob["version"]][category]],
+                                -benefits[blob["provider"][blob["version"]][category]],
                                 physical_card,
                             ),
                         )
