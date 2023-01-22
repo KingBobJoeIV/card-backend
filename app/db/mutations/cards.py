@@ -39,6 +39,14 @@ def remove_physicalcard(card_id):
     db.session.commit()
 
 
+def edit_physical_card(card_id: str, blob):
+    card: PhysicalCard = PhysicalCard.query.filter_by(card_id=card_id).first()
+    card.blob = {**card.blob, **blob}
+    flag_modified(card, "blob")
+    db.session.commit()
+    return card.as_json
+
+
 def remove_virtualcard(card_id):
     card = PhysicalCard.query.filter_by(card_id=card_id).first()
     card.active = False
@@ -49,6 +57,7 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
     original_amount = amount
     f = open("card_benefits.json")
     benefits = json.load(f)
+    f.close()
     virtual_card = VirtualCard.query.filter_by(
         id_=user_id, card_id=virtual_card_id
     ).first()
@@ -94,9 +103,17 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
             used.append((card.card_id, amount))
             amount = 0
         flag_modified(card, "blob")
-    row = Transaction(card_id=virtual_card_id, date=datetime.datetime.now(), amount=original_amount, category=category, name=company, cards_used=used)
+    row = Transaction(
+        card_id=virtual_card_id,
+        date=datetime.datetime.now(),
+        amount=original_amount,
+        category=category,
+        name=company,
+        cards_used=used,
+    )
     db.session.commit()
     print("purchase successful :D!")
+
 
 def list_transactions(user_id):
     return Transaction.query.filter_by(user_id=user_id).all()
