@@ -64,7 +64,7 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
                 if physical_card.active:
                     if physical_card.expiry:  # TODO
                         blob = physical_card.blob
-                        credit += blob["limit"]
+                        credit += (blob["limit"] - blob["spent"])
                         heapq.heappush(
                             cards,
                             (
@@ -84,13 +84,13 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
     used = []
     while amount > 0:
         card = heapq.heappop(cards)
-        temp = amount - card.blob["limit"]
+        temp = amount - (card.blob["limit"] - card.blob["spent"])
         if temp >= 0:
-            amount -= card.blob["limit"]
-            used.append((card.card_id, card.blob["limit"]))
-            card.blob["limit"] = 0
+            amount -= (card.blob["limit"] - card.blob["spent"])
+            used.append((card.card_id, (card.blob["limit"] - card.blob["spent"])))
+            card.blob["spent"] = card.blob["limit"]
         else:
-            card.blob["limit"] -= amount
+            card.blob["spent"] += amount
             used.append((card.card_id, amount))
             amount = 0
         flag_modified(card, "blob")
