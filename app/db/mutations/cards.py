@@ -1,11 +1,12 @@
 import json
+import heapq
 from sqlalchemy.orm.attributes import flag_modified
 from app.db.schemas import PhysicalCard
 from app.db.schemas import VirtualCard
 from app.db import db
 
 
-def physical_card_info(provider, version, number, cvv, exp, name):
+def physical_card_info(provider, version, number, cvv, exp, name, limit):
     return {
         "provider": provider,
         "version": version,
@@ -13,17 +14,18 @@ def physical_card_info(provider, version, number, cvv, exp, name):
         "cvv": cvv,
         "exp": exp,
         "name": name,
+        "limit": limit,
     }
 
 
 def add_physicalcard_to_db(card_id, data, user_id):
-    row = PhysicalCard(card_id, data, user_id)
+    row = PhysicalCard(card_id, data, user_id, active=True)
     db.session.add(row)
     db.session.commit()
 
 
 def add_virtualcard_to_db(card_id, number, cvv, expiry, address, zipcode):
-    row = VirtualCard(card_id, number, cvv, expiry, address, zipcode)
+    row = VirtualCard(card_id, number, cvv, expiry, address, zipcode, active=True)
     db.session.add(row)
     db.session.commit()
 
@@ -40,19 +42,53 @@ def remove_virtualcard(card_id):
     db.session.commit()
 
 
-def choose_card_for_payment(category, amount, user_id):
+def choose_card_for_payment(category, amount, user_id, virtual_card_id):
     f = open("card_benefits.json")
     benefits = json.load(f)
-    physical_cards = PhysicalCard.query.filter_by(id_=user_id).all()
-    value = []
-    for card in physical_cards:
-        if category in benefits[card.name]:
-            # the value/dollar we calculated at some point
-            if benefits[card.name][card.blob["credit"]] >= amount:
-                value.append((benefits[card.blob[card.name]][category], card.card_id))
-    if value:
-        return max(value)[1]
-    return None
+    virtual_card = VirtualCard.query.filter_by(id_=user_id, card_id=virtual_card_id).first()
+    credit = 0
+    cards = heapq()
+    if virtual_card.active:
+        physical_card_ids = virtual_card.config["physical_ids"]
+        if physical_card_ids:
+            for id in physical_card_ids:
+                physical_card = PhysicalCard.query.filter_by(id_=user_id, card_id=id).first()
+                if physical_card.active:
+                    if physical_card.expiry: # TODO
+                        blob = physical_card.blob
+                        credit += blob["limit"]
+                        heapq.heappush(cards, (benefits[blob["provider"]["version"][category]], physical_card))
+                    else:
+                        print(physical_card.card_id, "is expired!")
+        else:
+            print("there are no physical cards associated with the virtual card!")
+    else:
+        print("virtual card does not exist!")
+    if credit < amount:
+        print("you don't have enough funds!")
+        return
+    while amount > 0:
+        card = heapq.heappop(cards)
+        temp = amount - card.blob["limit"]
+        if temp >= 0:
+            amount -= card.blob["limit"]
+            card.blob["limit"] = 0
+        else:
+            card.blob["limit"] -= amount
+            amount = 0
+        flag_modified(card, "blob")
+    db.session.commit()
+    print("purchase successful :D!")
+        
+    # value = []
+    # for card in physical_cards:
+    #     if category in benefits[card.name]:
+    #         # the value/dollar we calculated at some point
+    #         if benefits[card.name][card.blob["credit"]] >= amount:
+    #             value.append((benefits[card.blob[card.name]][category], card.card_id))
+    # if value:
+    #     return max(value)[1]
+    # return None
 
 
 def charge_virtual_card(user_id, amount):
