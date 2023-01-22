@@ -13,6 +13,7 @@ def middleware(request: Request, state: State):
     resp.headers["access-control-allow-headers"] = request.headers.get(
         "access-control-request-headers", "*"
     )
+    resp.headers["Access-Control-Allow-Methods"] = "GET, PUT, POST, PATCH, DELETE"
     resp.headers["access-control-allow-credentials"] = "true"
     resp.headers["access-control-max-age"] = "86400"
     resp.headers["access-control-expose-headers"] = EXPOSE_HEADERS

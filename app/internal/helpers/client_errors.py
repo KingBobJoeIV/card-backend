@@ -1,4 +1,5 @@
-from app.internal.helpers import json_response, get_origin
+from app.internal.helpers import get_origin
+from app.internal.helpers.json_response import json_response
 from flask import request
 
 

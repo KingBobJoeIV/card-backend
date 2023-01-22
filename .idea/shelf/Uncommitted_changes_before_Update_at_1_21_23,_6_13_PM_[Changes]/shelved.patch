@@ -1,0 +1,121 @@
+Index: app/db/schemas/virtualcard.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from ..base import db\n\n\nclass VirtualCard(db.Model):\n    card_id: str = db.Column(db.TEXT, unique=True, nullable=False, primary_key=True)\n    id_: str = db.Column(db.TEXT, nullable=False)\n    card_number: str = db.Column(db.TEXT, nullable=False)\n    card_cvv: str = db.Column(db.TEXT, nullable=False)\n    card_expiry: str = db.Column(db.TEXT, nullable=False)\n    card_address: str = db.Column(db.TEXT, nullable=False)\n    card_zipcode: str = db.Column(db.TEXT, nullable=False)\n    card_limit: str = db.Column(db.TEXT, nullable=False)\n    active: bool = db.Column(db.BOOLEAN, nullable=False)\n\n    def __init__(\n            self,\n            card_id: str = None,\n            id_: str = None,\n            card_number: str = None,\n            card_cvv: str = None,\n            card_expiry: str = None,\n            card_address: str = None,\n            card_zipcode: str = None,\n            card_limit: str = None,\n            active: bool = None):\n        self.card_id = card_id\n        self.id_ = id_\n        self.card_number = card_number\n        self.card_cvv = card_cvv\n        self.card_expiry = card_expiry\n        self.card_address = card_address\n        self.card_zipcode = card_zipcode\n        self.card_limit = card_limit\n        self.active = active\n\n    @property\n    def as_json(self):\n        return {\n            \"card_id\": self.card_id,\n            \"id_\": self.id_,\n            \"card_number\": self.card_number,\n            \"card_cvv\": self.card_cvv,\n            \"card_expiry\": self.card_expiry,\n            \"card_address\": self.card_address,\n            \"card_zipcode\": self.card_zipcode,\n            \"card_limit\": self.card_limit,\n            \"active\": self.active,\n        }\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/db/schemas/virtualcard.py b/app/db/schemas/virtualcard.py
+--- a/app/db/schemas/virtualcard.py	
++++ b/app/db/schemas/virtualcard.py	
+@@ -11,6 +11,7 @@
+     card_zipcode: str = db.Column(db.TEXT, nullable=False)
+     card_limit: str = db.Column(db.TEXT, nullable=False)
+     active: bool = db.Column(db.BOOLEAN, nullable=False)
++    ratios: str = db.Column(db.JSON, nullable=False)
+ 
+     def __init__(
+             self,
+@@ -22,7 +23,8 @@
+             card_address: str = None,
+             card_zipcode: str = None,
+             card_limit: str = None,
+-            active: bool = None):
++            active: bool = None,
++            ratios: str = None):
+         self.card_id = card_id
+         self.id_ = id_
+         self.card_number = card_number
+@@ -32,6 +34,7 @@
+         self.card_zipcode = card_zipcode
+         self.card_limit = card_limit
+         self.active = active
++        self.ratios = ratios
+ 
+     @property
+     def as_json(self):
+@@ -45,4 +48,5 @@
+             "card_zipcode": self.card_zipcode,
+             "card_limit": self.card_limit,
+             "active": self.active,
++            "ratios": self.ratios,
+         }
+Index: app/core/payments.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import json\nfrom sqlalchemy.orm.attributes import flag_modified\nfrom app.db.schemas import PhysicalCard\nfrom app.db.schemas import VirtualCard\nfrom app.db import db\n\n\ndef physical_card_info(provider, version, number, cvv, exp, name):\n    return {\n            \"provider\": provider,\n            \"version\": version,\n            \"number\": number,\n            \"cvv\": cvv,\n            \"exp\": exp,\n            \"name\": name\n            }\n\n\ndef add_physicalcard_to_db(card_id, data, user_id):\n    row = PhysicalCard(card_id, data, user_id)\n    db.session.add(row)\n    db.session.commit()\n\n\ndef add_virtualcard_to_db(card_id, number, cvv, expiry, address, zipcode):\n    row = VirtualCard(card_id, number, cvv, expiry, address, zipcode)\n    db.session.add(row)\n    db.session.commit()\n\n\ndef remove_physicalcard(card_id):\n    card = PhysicalCard.query.filter_by(card_id=card_id).first()\n    setattr(card, \"active\", False)\n    db.session.commit()\n\n\ndef remove_virtualcard(card_id):\n    card = PhysicalCard.query.filter_by(card_id=card_id).first()\n    setattr(card, \"active\", False)\n    db.session.commit()\n\n\ndef choose_card_for_payment(category, amount, user_id):\n    f = open(\"card_benefits.json\")\n    benefits = json.load(f)\n    physical_cards = PhysicalCard.query.filter_by(id_=user_id).all()\n    value = []\n    for card in physical_cards:\n        if category in benefits[card.name]:\n            # the value/dollar we calculated at some point\n            if benefits[card.name][card.blob[\"credit\"]] >= amount:\n                value.append((benefits[card.blob[card.name]][category], card.card_id))\n    if value:\n        return max(value)[1]\n    return None\n\n\ndef charge_virtual_card(user_id, amount):\n    card = VirtualCard.query.filter_by(user_id=user_id).first()\n    setattr(card, \"amount\", card.amount-amount)\n    db.session.commit()\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/core/payments.py b/app/core/payments.py
+--- a/app/core/payments.py	
++++ b/app/core/payments.py	
+@@ -17,13 +17,13 @@
+ 
+ 
+ def add_physicalcard_to_db(card_id, data, user_id):
+-    row = PhysicalCard(card_id, data, user_id)
++    row = PhysicalCard(card_id, data, user_id, active=True)
+     db.session.add(row)
+     db.session.commit()
+ 
+ 
+ def add_virtualcard_to_db(card_id, number, cvv, expiry, address, zipcode):
+-    row = VirtualCard(card_id, number, cvv, expiry, address, zipcode)
++    row = VirtualCard(card_id, number, cvv, expiry, address, zipcode, active=True)
+     db.session.add(row)
+     db.session.commit()
+ 
+@@ -38,6 +38,20 @@
+     card = PhysicalCard.query.filter_by(card_id=card_id).first()
+     setattr(card, "active", False)
+     db.session.commit()
++
++
++def edit_physical_card(card_id, data):
++    card = PhysicalCard.query.filter_by(card_id=card_id).first()
++    setattr(card, "data", data)
++    flag_modified(card, "data")
++    db.session.commit()
++
++
++def edit_virtual_card(card_id, ratios):
++    card = PhysicalCard.query.filter_by(card_id=card_id).first()
++    setattr(card, "ratios", ratios)
++    flag_modified(card, "ratios")
++    db.session.commit()
+ 
+ 
+ def choose_card_for_payment(category, amount, user_id):
+Index: app/routes/user.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from app.db.mutations.user import create_user\nfrom app.db.mutations.util import commit\nfrom app.db.queries.user import get_user_by_username\nfrom app.decorators.api_response import api\nfrom app.exceptions.app_exception import AppException\nfrom app.internal.context import Context\nfrom app.internal.helpers.json_response import json_response\nfrom app.internal.security.auth_token import (\n    authenticate,\n    get_bearer_token,\n    regenerate_access_token,\n)\nfrom app.internal.security.danger import create_token, decode_token\nfrom app.models.user import (\n    LoginModel,\n    UserEditable,\n    UserIn,\n    UserOut,\n    UserOutSecure,\n)\nfrom flask import Blueprint\n\nrouter = Blueprint(\"user\", __name__, url_prefix=\"/users\")\n\n\n@router.post(\"/-/register\", strict_slashes=False)\n@api.none\ndef register():\n    req = Context()\n    json = req.json\n    pw = json.pop(\"password\", None)\n    body = UserIn(**req.json, password_hash=pw, is_admin=False)\n    js = create_user(body, return_json=True)\n    return {\"user_data\": js}\n\n\n@router.post(\"/-/login\")\n@api.none\ndef login():\n    req = Context(LoginModel)\n    body = req.body\n    access, refresh, user_data = authenticate(body.user, body.password)\n    return json_response(\n        {\"user_data\": user_data.as_json},\n        headers={\"x-access-token\": access, \"x-refresh-token\": refresh},\n    )\n\n\n@router.get(\"/-/token/refresh\")\n@api.strict\ndef refresh_token():\n    context = Context()\n    headers = context.headers\n    access_token = get_bearer_token(headers)\n    decoded_access = decode_token(access_token)\n    if decoded_access is None:\n        refresh_token = headers.get(\"x-refresh-token\")\n        decoded_refresh = decode_token(refresh_token)\n        access, refresh = regenerate_access_token(decoded_refresh)\n        if access is None:\n            raise AppException(\"re-auth\")\n\n        return json_response(\n            {},\n            headers={\n                \"x-access-token\": create_token(access),\n                \"x-refresh-token\": create_token(refresh),\n            },\n        )\n    return {}\n\n\n@router.get(\"/<user>/\")\n@api.lax\ndef user_details(user: str):\n    req = Context()\n    auth = req.auth\n    is_me = user == \"me\"\n    if is_me:\n        if not auth.user:\n            raise AppException(\"Not authenticated\", 401)\n        user = auth.user\n    user_data = get_user_by_username(user)\n    show_secure = user_data.user == auth.user or auth.is_admin\n    model = (\n        UserOutSecure.from_db(user_data) if show_secure else UserOut.from_db(user_data)\n    )\n    return {\"user_data\": model.dict()}\n\n\n@router.patch(\"/<user>/\")\n@api.strict\ndef edit(user: str):\n    req = Context()\n    user = user.lower()\n    if user != req.auth.user and not req.auth.is_admin:\n        raise AppException(\"Not authorized to edit\", 401)\n    if not req.auth.is_admin:\n        body = UserEditable(**req.json)\n    else:\n        body = UserIn(**req.json)\n    user_data = get_user_by_username(user)\n    user_data.user = body.user or user_data.user\n    user_data.name = body.name or user_data.name\n    json = user_data.as_json\n    commit()\n    return json\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/routes/user.py b/app/routes/user.py
+--- a/app/routes/user.py	
++++ b/app/routes/user.py	
+@@ -19,6 +19,7 @@
+     UserOutSecure,
+ )
+ from flask import Blueprint
++from app.core.payments import add_physicalcard_to_db, add_virtualcard_to_db, physical_card_info
+ 
+ router = Blueprint("user", __name__, url_prefix="/users")
+ 
+@@ -105,3 +106,13 @@
+     json = user_data.as_json
+     commit()
+     return json
++
++
++def add_physical_card():
++    # todo get form data
++    data = physical_card_info()
++    add_physicalcard_to_db(card_id, data, user_id)
++
++
++def generate_virtual_card():
++

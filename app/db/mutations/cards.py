@@ -1,9 +1,9 @@
 import json
 import heapq
 from sqlalchemy.orm.attributes import flag_modified
-from app.db.schemas import PhysicalCard
-from app.db.schemas import VirtualCard
+
 from app.db import db
+from app.db.schemas import PhysicalCard, VirtualCard
 
 
 def physical_card_info(provider, version, number, cvv, exp, name, limit):
@@ -18,10 +18,12 @@ def physical_card_info(provider, version, number, cvv, exp, name, limit):
     }
 
 
-def add_physicalcard_to_db(card_id, data, user_id):
-    row = PhysicalCard(card_id, data, user_id, active=True)
+def add_physicalcard_to_db(data, user_id):
+    row = PhysicalCard(data, user_id)
+    res = row.as_json
     db.session.add(row)
     db.session.commit()
+    return res
 
 
 def add_virtualcard_to_db(card_id, number, cvv, expiry, address, zipcode):

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="167e5971-5521-4ced-8422-b9f801f01297" name="Changes" comment="added option to delete cards" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/app/db/schemas/user.py" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectId" id="2Kce0UlhD9I82b2zXsQMAfZwYze" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="167e5971-5521-4ced-8422-b9f801f01297" name="Changes" comment="" />
+      <created>1674278075572</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1674278075572</updated>
+      <workItem from="1674278077082" duration="9000" />
+      <workItem from="1674278171850" duration="675000" />
+      <workItem from="1674280695705" duration="1957000" />
+      <workItem from="1674282765161" duration="1434000" />
+      <workItem from="1674329047821" duration="330000" />
+      <workItem from="1674329415420" duration="580000" />
+      <workItem from="1674330005894" duration="1876000" />
+      <workItem from="1674331966251" duration="158000" />
+      <workItem from="1674332137340" duration="5630000" />
+      <workItem from="1674338129183" duration="1907000" />
+      <workItem from="1674342296171" duration="568000" />
+      <workItem from="1674345196095" duration="3000" />
+    </task>
+    <task id="LOCAL-00001" summary="added email to user table">
+      <created>1674281284385</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1674281284385</updated>
+    </task>
+    <task id="LOCAL-00002" summary="created physical and virtual card tables">
+      <created>1674282980978</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1674282980978</updated>
+    </task>
+    <task id="LOCAL-00003" summary="updated virtualcard schema, wrote functions to add cards to db+make payments">
+      <created>1674332223138</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1674332223138</updated>
+    </task>
+    <task id="LOCAL-00004" summary="created transaction table">
+      <created>1674336053637</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1674336053637</updated>
+    </task>
+    <task id="LOCAL-00005" summary="..">
+      <created>1674336593406</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1674336593406</updated>
+    </task>
+    <task id="LOCAL-00006" summary="added option to delete cards">
+      <created>1674337673860</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1674337673860</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="added email to user table" />
+    <MESSAGE value="created physical and virtual card tables" />
+    <MESSAGE value="updated virtualcard schema, wrote functions to add cards to db+make payments" />
+    <MESSAGE value="created transaction table" />
+    <MESSAGE value=".." />
+    <MESSAGE value="added option to delete cards" />
+    <option name="LAST_COMMIT_MESSAGE" value="added option to delete cards" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
