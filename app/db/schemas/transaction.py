@@ -1,3 +1,4 @@
+# pylint:skip-file
 from ..base import db
 from secrets import token_urlsafe
 
@@ -6,7 +7,7 @@ class Transaction(db.Model):
     tx_id: str = db.Column(db.TEXT, unique=True, nullable=False, primary_key=True)
     user_id: str = db.Column(db.TEXT, nullable=False)
     card_id: str = db.Column(db.TEXT, nullable=False)
-    date: str = db.Column(db.JSON, nullable=False)
+    date: str = db.Column(db.TEXT, nullable=False)
     amount: str = db.Column(db.TEXT, nullable=False)
     category: str = db.Column(db.TEXT, nullable=False)
     name: str = db.Column(db.TEXT, nullable=False)
@@ -35,7 +36,7 @@ class Transaction(db.Model):
     def as_json(self):
         return {
             "card_id": self.card_id,
-            "tx_id": self.id_,
+            "tx_id": self.tx_id,
             "user_id": self.user_id,
             "date": self.date,
             "amount": self.amount,
