@@ -1,0 +1,29 @@
+{
+    "american_express": {
+        "gold": {
+            
+        },
+        "platinum": {
+
+        }
+    },
+    "visa": {
+        "gold": {
+
+         },
+        "platinum": {
+
+         },
+        "infinite": {
+
+        }
+    },
+    "mastercard": {
+        "standard": {
+
+        },
+        "world": {
+            
+        }
+    }
+}
