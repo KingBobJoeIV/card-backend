@@ -5,6 +5,7 @@ import datetime
 
 from app.db import db
 from app.db.schemas import PhysicalCard, VirtualCard, Transaction
+from app.exceptions.app_exception import AppException
 from pathlib import Path
 
 
@@ -70,6 +71,10 @@ f = Path() / "app" / "core/card_benefits.json"
 benefits = json.loads(f.read_text())
 
 
+def find_virtualcard(name, card_number):
+    return VirtualCard.querty.filter_by(name=name, card_number=card_number).first()
+
+
 def choose_card_for_payment(company, category, amount, user_id, virtual_card_id):
     original_amount = amount
     virtual_card = VirtualCard.query.filter_by(
@@ -99,13 +104,15 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
                             ),
                         )
                     else:
-                        print(physical_card.card_id, "is expired!")
+                        raise AppException(physical_card.card_id + " is expired!")
         else:
-            print("there are no physical cards associated with the virtual card!")
+            raise AppException(
+                "there are no physical cards associated with the virtual card!"
+            )
     else:
-        print("virtual card does not exist!")
+        raise AppException("virtual card does not exist!")
     if credit < amount:
-        print("you don't have enough funds!")
+        raise AppException("you don't have enough funds!")
         return
     used = []
     while amount > 0:
@@ -120,6 +127,8 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
             used.append((card.card_id, amount))
             amount = 0
         flag_modified(card, "blob")
+    virtual_card.config["spent"] += amount
+    flag_modified(virtual_card, "config")
     row = Transaction(
         card_id=virtual_card_id,
         date=datetime.datetime.now(),
@@ -130,7 +139,7 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
     )
     db.session.add(row)
     db.session.commit()
-    print("purchase successful :D!")
+    return row.as_json
 
 
 def list_transactions(user_id):
