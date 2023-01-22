@@ -141,7 +141,9 @@ def choose_card_for_payment(
             amount = 0
         card.blob = card_blob
         flag_modified(card, "blob")
-    virtual_card.config["spent"] += amount
+    cfg = {**virtual_card.config}
+    cfg["spent"] += amount
+    virtual_card.config = cfg
     flag_modified(virtual_card, "config")
     from time import time
 
