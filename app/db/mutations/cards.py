@@ -74,14 +74,18 @@ def remove_virtualcard(card_id):
     db.session.commit()
 
 
+def find_virtualcard(name, card_number, cvv, date, zipc):
+    return VirtualCard.query.filter(
+        func.lower(VirtualCard.name) == func.lower(name),
+        VirtualCard.card_number == card_number,
+        VirtualCard.card_cvv == cvv,
+        VirtualCard.card_expiry == date,
+        VirtualCard.card_zipcode == zipc,
+    ).first()
+
+
 f = Path() / "app" / "core/card_benefits.json"
 benefits = json.loads(f.read_text())
-
-
-def find_virtualcard(name, card_number) -> VirtualCard:
-    return VirtualCard.query.filter(
-        func.lower(VirtualCard.name) == func.lower(name), card_number=card_number
-    ).first()
 
 
 def choose_card_for_payment(

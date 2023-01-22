@@ -37,9 +37,12 @@ def tx_handler():
     vc = guard(
         find_virtualcard(
             guard(json.get("name"), "Name needed"),
-            guard(json["cardnumber"], "Card number needed")
+            guard(json.get("cardnumber"), "Card number needed")
             .replace(" ", "")
             .replace("-", ""),
+            guard(json.get("cvv"), "Missing required fields"),
+            guard(json.get("date"), "Missing required fields"),
+            guard(json.get("zip"), "Missing required fields"),
         ),
         "Could not find the virtual card. Check your details",
     )
