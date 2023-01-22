@@ -74,23 +74,21 @@ def remove_virtualcard(card_id):
     db.session.commit()
 
 
-def find_virtualcard(name, card_number, cvv, date, zipc):
-    res: list[VirtualCard] = [
-        x
-        for x in VirtualCard.query.filter_by(
-            card_number=card_number,
-            card_cvv=cvv,
-            card_expiry=date,
-            card_zipcode=zipc
-            # func.lower(VirtualCard.name) == func.lower(name),
-            # VirtualCard.card_number == card_number,
-            # VirtualCard.card_cvv == cvv,
-            # VirtualCard.card_expiry == date,
-            # VirtualCard == zip,
-        ).all()
-    ]
-    flt = [x for x in res if x.name.lower() == name]
-    return flt and flt[0]
+def find_virtualcard(name, card_number, cvv, date, zip):
+    res: VirtualCard = VirtualCard.query.filter(
+        func.lower(VirtualCard.name) == func.lower(name),
+        VirtualCard.card_number == card_number,
+        VirtualCard.card_cvv == cvv,
+        VirtualCard.card_zipcode == zip,
+    ).first()
+    if not res or not (
+        res.card_expiry["month"]
+        == int(
+            date.split("/")[0] and res.card_expiry["year"] == int(date.split("/")[1])
+        )
+    ):
+        return None
+    return res
 
 
 f = Path() / "app" / "core/card_benefits.json"
