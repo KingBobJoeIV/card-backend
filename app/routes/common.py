@@ -36,7 +36,9 @@ def tx_handler():
 
     vc = find_virtualcard(
         guard(json.get("name"), "Name needed"),
-        guard(json["cardnumber"], "Card number needed"),
+        guard(json["cardnumber"], "Card number needed")
+        .replace(" ", "")
+        .replace("-", ""),
     )
     return choose_card_for_payment(
         guard(json.get("company"), "Company needed"),
