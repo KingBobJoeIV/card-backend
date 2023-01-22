@@ -82,10 +82,8 @@ def find_virtualcard(name, card_number, cvv, date, zip):
         VirtualCard.card_zipcode == zip,
     ).first()
     if not res or not (
-        res.card_expiry["month"]
-        == int(
-            date.split("/")[0] and res.card_expiry["year"] == int(date.split("/")[1])
-        )
+        (res.card_expiry["month"] == date.split("/")[0])
+        and res.card_expiry["year"] == (date.split("/")[1])
     ):
         return None
     return res
