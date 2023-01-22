@@ -76,7 +76,7 @@ def remove_virtualcard(card_id):
 
 def find_virtualcard(name, card_number, cvv, date, zipc):
     return VirtualCard.query.filter(
-        func.lower(VirtualCard.name) == func.lower(name),
+        (VirtualCard.name) == (name),
         VirtualCard.card_number == card_number,
         VirtualCard.card_cvv == cvv,
         VirtualCard.card_expiry == date,
