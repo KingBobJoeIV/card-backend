@@ -127,7 +127,7 @@ def choose_card_for_payment(
                             cards,
                             (
                                 -cat,
-                                physical_card,
+                                physical_card.card_id,physical_card,
                             ),
                         )
                     else:
@@ -142,7 +142,7 @@ def choose_card_for_payment(
         raise AppException("you don't have enough funds!")
     used = []
     while amount > 0:
-        card = heapq.heappop(cards)[1]
+        card = heapq.heappop(cards)[2]
         card_blob = {**card.blob}
         temp = amount - (card_blob["limit"] - card_blob["spent"])
         if temp >= 0:
