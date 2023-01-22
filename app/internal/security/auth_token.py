@@ -22,18 +22,19 @@ def regenerate_access_token(refresh: dict) -> dict:
     current = get_integrity(data.id_, data.password_hash)
     if check(integrity, current):
         return (
-            issue_access_token(user_id, username, is_admin),
+            issue_access_token(user_id, username, is_admin, data.name),
             issue_refresh_token(user_id, data.password_hash),
         )
     return None, None
 
 
-def issue_access_token(user_id: str, username: str, is_admin: bool):
+def issue_access_token(user_id: str, username: str, is_admin: bool, name):
     return {
         "token_type": ACCESS_TOKEN,
         "user_id": user_id,
         "user": username,
         "is_admin": is_admin,
+        "name": name,
     }
 
 
@@ -85,6 +86,8 @@ def authenticate(user: str, password: str):
         raise AppException("Incorrect Password", code=401)
     username = user_data.user
     is_admin = user_data.is_admin
-    access_token = create_token(issue_access_token(user_data.id_, username, is_admin))
+    access_token = create_token(
+        issue_access_token(user_data.id_, username, is_admin, user_data.name)
+    )
     refresh_token = create_token(issue_refresh_token(user_data.id_, pw_hash))
     return access_token, refresh_token, user_data

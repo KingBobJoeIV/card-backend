@@ -51,7 +51,7 @@ def handle_validation_error(e):
     return json_response({"error": ", ".join(message)}, status=422)
 
 
-NULL_USER = UserSession(user=None, user_id=None, is_admin=False)
+NULL_USER = UserSession(user=None, user_id=None, is_admin=False, name=None)
 
 
 def _auth(auth_mode):

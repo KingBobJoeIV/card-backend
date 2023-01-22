@@ -13,6 +13,7 @@ from pydantic import validator, constr, EmailStr
 class UserSession(BaseModel):
     user_id: Optional[str]
     user: Optional[str]
+    name: Optional[str]
     is_admin: bool
 
 

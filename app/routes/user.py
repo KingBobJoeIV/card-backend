@@ -1,5 +1,10 @@
 from app.db.mutations.user import create_user
-from app.db.mutations.cards import add_physicalcard_to_db, remove_physicalcard
+from app.db.mutations.cards import (
+    add_physicalcard_to_db,
+    remove_physicalcard,
+    edit_physical_card,
+    add_virtualcard_to_db,
+)
 from app.db.mutations.util import commit
 from app.db.queries.user import get_user_by_username
 
@@ -12,7 +17,7 @@ from app.internal.security.auth_token import (
     get_bearer_token,
     regenerate_access_token,
 )
-from app.db.queries.cards import get_physical_cards
+from app.db.queries.cards import get_physical_cards, get_virtual_cards
 from app.internal.security.danger import create_token, decode_token
 from app.models.user import (
     LoginModel,
@@ -22,6 +27,8 @@ from app.models.user import (
     UserOutSecure,
 )
 from flask import Blueprint
+
+from app.internal.helpers.random_card import card
 
 router = Blueprint("user", __name__, url_prefix="/users")
 
@@ -118,7 +125,7 @@ def edit(user: str):
 @api.strict
 def api_get_physical_cards():
     req = Context()
-    print([x.as_json for x in get_physical_cards(req.auth.user_id)])
+
     return {"cards": [x.as_json for x in get_physical_cards(req.auth.user_id)]}
 
 
@@ -131,10 +138,46 @@ def api_put_physical_cards():
     return add_physicalcard_to_db(json, req.auth.user_id)
 
 
-@router.post("/cards/physical/")
+@router.delete("/cards/physical/<card_id>")
 @api.strict
-def api_del_physical_cards():
+def api_del_physical_cards(card_id):
+
+    remove_physicalcard(card_id)
+    return {}
+
+
+@router.patch("/cards/physical/<card_id>")
+@api.strict
+def api_patch_physical_cards(card_id):
     req = Context()
     json = req.json
-    remove_physicalcard(json["card_id"])
-    return {}
+    return edit_physical_card(card_id, json)
+
+
+@router.get("/cards/virtual")
+@api.strict
+def api_get_virtual_cards():
+    req = Context()
+    return {"cards": [x.as_json for x in get_virtual_cards(req.auth.user_id)]}
+
+
+@router.post("/cards/virtual/create")
+@api.strict
+def api_create_virtual_card():
+    import random
+
+    req = Context()
+    json = req.json
+    c = card()
+    return add_virtualcard_to_db(
+        req.auth.user_id,
+        req.auth.name,
+        c,
+        str(random.randint(0, 999)).zfill(3),
+        str(random.randint(0, 12)).zfill(2)
+        + "/"
+        + str(random.randint(23, 30)).zfill(2),
+        "1 E Ohio St Indianapolis, IN",
+        "46204",
+        json,
+    )
