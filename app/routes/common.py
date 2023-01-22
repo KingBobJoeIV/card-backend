@@ -34,11 +34,14 @@ def tx_handler():
     ctx = Context()
     json = ctx.json
 
-    vc = find_virtualcard(
-        guard(json.get("name"), "Name needed"),
-        guard(json["cardnumber"], "Card number needed")
-        .replace(" ", "")
-        .replace("-", ""),
+    vc = guard(
+        find_virtualcard(
+            guard(json.get("name"), "Name needed"),
+            guard(json["cardnumber"], "Card number needed")
+            .replace(" ", "")
+            .replace("-", ""),
+        ),
+        "Could not find the virtual card. Check your details",
     )
     return choose_card_for_payment(
         guard(json.get("company"), "Company needed"),
