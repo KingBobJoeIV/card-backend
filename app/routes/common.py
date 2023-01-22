@@ -43,5 +43,5 @@ def tx_handler():
         guard(json.get("category"), "purchase category needed"),
         float(guard(json.get("amount") or "0", "amount needed")),
         vc.id_,
-        vc.card_id,
+        vc,
     )

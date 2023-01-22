@@ -1,5 +1,7 @@
+# pylint:skip-file
 from ..base import db
 from secrets import token_urlsafe
+
 
 
 class Transaction(db.Model):

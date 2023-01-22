@@ -26,12 +26,14 @@ def physical_card_info(provider, version, number, cvv, exp, name, limit):
 def add_physicalcard_to_db(data, user_id):
     row = PhysicalCard(data, user_id)
     res = row.as_json
+    # pylint:disable=no-member
     db.session.add(row)
     db.session.commit()
     return res
 
 
 def add_virtualcard_to_db(id_, name, number, cvv, expiry, address, zipcode, config):
+    # pylint:disable=no-member
     row = VirtualCard(
         id_=id_,
         name=name,
@@ -49,12 +51,14 @@ def add_virtualcard_to_db(id_, name, number, cvv, expiry, address, zipcode, conf
 
 
 def remove_physicalcard(card_id):
+    # pylint:disable=no-member
     card = PhysicalCard.query.filter_by(card_id=card_id).first()
     card.active = False
     db.session.commit()
 
 
 def edit_physical_card(card_id: str, blob):
+    # pylint:disable=no-member
     card: PhysicalCard = PhysicalCard.query.filter_by(card_id=card_id).first()
     card.blob = {**card.blob, **blob}
     flag_modified(card, "blob")
@@ -63,7 +67,7 @@ def edit_physical_card(card_id: str, blob):
 
 
 def remove_virtualcard(card_id):
-
+    # pylint:disable=no-member
     card = VirtualCard.query.filter_by(card_id=card_id).first()
     card.active = False
     db.session.commit()
@@ -77,11 +81,11 @@ def find_virtualcard(name, card_number) -> VirtualCard:
     return VirtualCard.query.filter_by(name=name, card_number=card_number).first()
 
 
-def choose_card_for_payment(company, category, amount, user_id, virtual_card_id):
+def choose_card_for_payment(
+    company, category, amount, user_id, virtual_card: VirtualCard
+):
     original_amount = amount
-    virtual_card: VirtualCard = VirtualCard.query.filter_by(
-        id_=user_id, card_id=virtual_card_id
-    ).first()
+    virtual_card_id = virtual_card.card_id
     credit = 0
     cards = []
     if virtual_card.active:
@@ -143,7 +147,9 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
         category=category,
         name=company,
         cards_used=used,
+        user_id=user_id,
     )
+    # pylint:disable=no-member
     db.session.add(row)
     db.session.commit()
     return row.as_json
