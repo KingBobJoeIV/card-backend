@@ -1,12 +1,14 @@
-import json
 import heapq
+import json
+from datetime import datetime
+from pathlib import Path
+
 from sqlalchemy.orm.attributes import flag_modified
-import datetime
 
 from app.db import db
-from app.db.schemas import PhysicalCard, VirtualCard, Transaction
+from app.db.schemas import PhysicalCard, Transaction, VirtualCard
 from app.exceptions.app_exception import AppException
-from pathlib import Path
+from app.internal.helpers.guard import guard
 
 
 def physical_card_info(provider, version, number, cvv, exp, name, limit):
@@ -77,7 +79,7 @@ def find_virtualcard(name, card_number) -> VirtualCard:
 
 def choose_card_for_payment(company, category, amount, user_id, virtual_card_id):
     original_amount = amount
-    virtual_card = VirtualCard.query.filter_by(
+    virtual_card: VirtualCard = VirtualCard.query.filter_by(
         id_=user_id, card_id=virtual_card_id
     ).first()
     credit = 0
@@ -86,9 +88,10 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
         physical_card_ids = virtual_card.config["physical_ids"]
         if physical_card_ids:
             for id in physical_card_ids:
-                physical_card = PhysicalCard.query.filter_by(
-                    id_=user_id, card_id=id
-                ).first()
+                physical_card: PhysicalCard = guard(
+                    PhysicalCard.query.filter_by(id_=user_id, card_id=id).first(),
+                    "Physical card not found",
+                )
                 if physical_card.active:
                     blob = physical_card.blob
                     if (
