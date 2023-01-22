@@ -64,8 +64,8 @@ def remove_virtualcard(card_id):
     db.session.commit()
 
 
-def find_virtualcard(name, card_number):
-    return VirtualCard.querty.filter_by(name=name, card_number=card_number).first()
+def find_virtualcard(name, card_number, cvv, date, zip):
+    return VirtualCard.querty.filter_by(name=name, card_number=card_number, card_cvv=cvv, card_expiry=date, card_zipcode=zip).first()
 
 def choose_card_for_payment(company, category, amount, user_id, virtual_card_id):
     original_amount = amount
