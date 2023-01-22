@@ -15,6 +15,11 @@ class VirtualCard(db.Model):
     active: bool = db.Column(db.BOOLEAN, nullable=False)
     config: dict = db.Column(db.JSON, default={})
 
+
+    def __gt__(self,other):
+        return 0
+    
+
     def __init__(
         self,
         id_: str = None,
