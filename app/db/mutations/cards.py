@@ -99,10 +99,15 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
                         and blob["expiry"]["year"] >= datetime.now().year
                     ):
                         credit += blob["limit"] - blob["spent"]
+                        try:
+                            cat = benefits[blob["provider"]][blob["version"]][category]
+                        except Exception as e:
+                            print(e)
+                            cat = 0
                         heapq.heappush(
                             cards,
                             (
-                                -benefits[blob["provider"][blob["version"]][category]],
+                                -cat,
                                 physical_card,
                             ),
                         )
