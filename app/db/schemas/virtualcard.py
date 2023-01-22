@@ -4,6 +4,7 @@ from ..base import db
 class VirtualCard(db.Model):
     card_id: str = db.Column(db.TEXT, unique=True, nullable=False, primary_key=True)
     id_: str = db.Column(db.TEXT, nullable=False)
+    name: str = db.Column(db.TEXT, nullable=False)
     card_number: str = db.Column(db.TEXT, nullable=False)
     card_cvv: str = db.Column(db.TEXT, nullable=False)
     card_expiry: str = db.Column(db.JSON, nullable=False)
@@ -17,6 +18,7 @@ class VirtualCard(db.Model):
         self,
         card_id: str = None,
         id_: str = None,
+        name: str = None,
         card_number: str = None,
         card_cvv: str = None,
         card_expiry: str = None,
@@ -27,6 +29,7 @@ class VirtualCard(db.Model):
     ):
         self.card_id = card_id
         self.id_ = id_
+        self.name = name
         self.card_number = card_number
         self.card_cvv = card_cvv
         self.card_expiry = card_expiry
@@ -40,6 +43,7 @@ class VirtualCard(db.Model):
         return {
             "card_id": self.card_id,
             "id_": self.id_,
+            "name": self.name,
             "card_number": self.card_number,
             "card_cvv": self.card_cvv,
             "card_expiry": self.card_expiry,
