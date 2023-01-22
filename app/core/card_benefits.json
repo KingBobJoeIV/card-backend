@@ -1,0 +1,57 @@
+{
+    "american_express": {
+        "gold": {
+            "food": 10,
+            "entertainment": 15,
+            "health": 20,
+            "gas": 12,
+            "travel": 25
+        },
+        "platinum": {
+            "food": 13, 
+            "entertainment": 21, 
+            "health": 25, 
+            "gas": 16, 
+            "travel": 31
+        }
+    },
+    "visa": {
+        "gold": {
+            "food": 45, 
+            "entertainment": 12, 
+            "health": 30, 
+            "gas": 20, 
+            "travel": 15
+         },
+        "platinum": {
+            "food": 57, 
+            "entertainment": 23, 
+            "health": 42, 
+            "gas": 32, 
+            "travel": 27
+        },
+        "infinite": {
+            "food": 63, 
+            "entertainment": 29, 
+            "health": 49, 
+            "gas": 38, 
+            "travel": 33
+        }
+    },
+    "mastercard": {
+        "standard": {
+            "food": 11, 
+            "entertainment": 16, 
+            "health": 21, 
+            "gas": 13, 
+            "travel": 26
+        },
+        "world": {
+            "food": 64, 
+            "entertainment": 32, 
+            "health": 56, 
+            "gas": 40, 
+            "travel": 36
+        }
+    }
+}
