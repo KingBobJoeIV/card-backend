@@ -128,15 +128,18 @@ def choose_card_for_payment(
     used = []
     while amount > 0:
         card = heapq.heappop(cards)[1]
-        temp = amount - (card.blob["limit"] - card.blob["spent"])
+        card_blob = {**card.blob}
+        temp = amount - (card_blob["limit"] - card_blob["spent"])
         if temp >= 0:
-            amount -= card.blob["limit"] - card.blob["spent"]
-            used.append((card.card_id, (card.blob["limit"] - card.blob["spent"])))
-            card.blob["spent"] = card.blob["limit"]
+            amount -= card_blob["limit"] - card_blob["spent"]
+            used.append((card.card_id, (card_blob["limit"] - card_blob["spent"])))
+            card_blob["spent"] = card_blob["limit"]
         else:
-            card.blob["spent"] += amount
+            card_blob["spent"] += amount
+
             used.append((card.card_id, amount))
             amount = 0
+        card.blob = card_blob
         flag_modified(card, "blob")
     virtual_card.config["spent"] += amount
     flag_modified(virtual_card, "config")
