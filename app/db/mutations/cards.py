@@ -9,6 +9,7 @@ from app.db import db
 from app.db.schemas import PhysicalCard, Transaction, VirtualCard
 from app.exceptions.app_exception import AppException
 from app.internal.helpers.guard import guard
+from sqlalchemy import func
 
 
 def physical_card_info(provider, version, number, cvv, exp, name, limit):
@@ -78,7 +79,9 @@ benefits = json.loads(f.read_text())
 
 
 def find_virtualcard(name, card_number) -> VirtualCard:
-    return VirtualCard.query.filter_by(name=name, card_number=card_number).first()
+    return VirtualCard.query.filter(
+        func.lower(VirtualCard.name) == func.lower(name), card_number=card_number
+    ).first()
 
 
 def choose_card_for_payment(
