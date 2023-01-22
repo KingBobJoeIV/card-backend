@@ -81,7 +81,7 @@ def choose_card_for_payment(company, category, amount, user_id, virtual_card_id)
         id_=user_id, card_id=virtual_card_id
     ).first()
     credit = 0
-    cards = heapq()
+    cards = []
     if virtual_card.active:
         physical_card_ids = virtual_card.config["physical_ids"]
         if physical_card_ids:
