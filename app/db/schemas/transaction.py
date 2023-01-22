@@ -12,14 +12,14 @@ class Transaction(db.Model):
     def __init__(
         self,
         card_id: str = None,
-        id_: str = None,
+        tx_id: str = None,
         date: str = None,
         amount: str = None,
         category: str = None,
         name: str = None,
     ):
         self.card_id = card_id
-        self.id_ = id_
+        self.tx_id = tx_id
         self.date = date
         self.amount = amount
         self.category = category
@@ -29,7 +29,7 @@ class Transaction(db.Model):
     def as_json(self):
         return {
             "card_id": self.card_id,
-            "id_": self.id_,
+            "tx_id": self.id_,
             "date": self.date,
             "amount": self.amount,
             "category": self.category,
