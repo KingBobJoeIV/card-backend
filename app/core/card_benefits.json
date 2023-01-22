@@ -1,5 +1,12 @@
 {
-    "american_express": {
+    "amex": {
+        "standard": {
+            "food": 9, 
+            "entertainment": 13, 
+            "health": 13, 
+            "gas": 8, 
+            "travel": 5
+        },
         "gold": {
             "food": 10,
             "entertainment": 15,
@@ -16,6 +23,13 @@
         }
     },
     "visa": {
+        "standard": {
+            "food": 34, 
+            "entertainment": 8, 
+            "health": 21, 
+            "gas": 13, 
+            "travel": 8
+        },
         "gold": {
             "food": 45, 
             "entertainment": 12, 
