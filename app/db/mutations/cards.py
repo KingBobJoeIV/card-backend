@@ -1,9 +1,10 @@
 import json
 import heapq
 from sqlalchemy.orm.attributes import flag_modified
+import datetime
 
 from app.db import db
-from app.db.schemas import PhysicalCard, VirtualCard
+from app.db.schemas import PhysicalCard, VirtualCard, Transaction
 
 
 def physical_card_info(provider, version, number, cvv, exp, name, limit):
@@ -44,7 +45,8 @@ def remove_virtualcard(card_id):
     db.session.commit()
 
 
-def choose_card_for_payment(category, amount, user_id, virtual_card_id):
+def choose_card_for_payment(company, category, amount, user_id, virtual_card_id):
+    original_amount = amount
     f = open("card_benefits.json")
     benefits = json.load(f)
     virtual_card = VirtualCard.query.filter_by(id_=user_id, card_id=virtual_card_id).first()
@@ -69,31 +71,22 @@ def choose_card_for_payment(category, amount, user_id, virtual_card_id):
     if credit < amount:
         print("you don't have enough funds!")
         return
+    used = []
     while amount > 0:
         card = heapq.heappop(cards)
         temp = amount - card.blob["limit"]
         if temp >= 0:
             amount -= card.blob["limit"]
+            used.append((card.card_id, card.blob["limit"]))
             card.blob["limit"] = 0
         else:
             card.blob["limit"] -= amount
+            used.append((card.card_id, amount))
             amount = 0
         flag_modified(card, "blob")
+    row = Transaction(card_id=virtual_card_id, date=datetime.datetime.now(), amount=original_amount, category=category, name=company, cards_used=used)
     db.session.commit()
     print("purchase successful :D!")
-        
-    # value = []
-    # for card in physical_cards:
-    #     if category in benefits[card.name]:
-    #         # the value/dollar we calculated at some point
-    #         if benefits[card.name][card.blob["credit"]] >= amount:
-    #             value.append((benefits[card.blob[card.name]][category], card.card_id))
-    # if value:
-    #     return max(value)[1]
-    # return None
 
-
-def charge_virtual_card(user_id, amount):
-    card = VirtualCard.query.filter_by(user_id=user_id).first()
-    setattr(card, "amount", card.amount - amount)
-    db.session.commit()
+def list_transactions(user_id):
+    return Transaction.query.filter_by(user_id=user_id).all()
