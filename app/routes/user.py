@@ -1,5 +1,5 @@
 from app.db.mutations.user import create_user
-from app.db.mutations.cards import add_physicalcard_to_db
+from app.db.mutations.cards import add_physicalcard_to_db, remove_physicalcard
 from app.db.mutations.util import commit
 from app.db.queries.user import get_user_by_username
 
@@ -129,3 +129,12 @@ def api_put_physical_cards():
     json = req.json
 
     return add_physicalcard_to_db(json, req.auth.user_id)
+
+
+@router.post("/cards/physical/")
+@api.strict
+def api_del_physical_cards():
+    req = Context()
+    json = req.json
+    remove_physicalcard(json["card_id"])
+    return {}

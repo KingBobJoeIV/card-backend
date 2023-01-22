@@ -1,4 +1,5 @@
 from ..base import db
+from secrets import token_urlsafe
 
 
 class Transaction(db.Model):
@@ -12,14 +13,13 @@ class Transaction(db.Model):
     def __init__(
         self,
         card_id: str = None,
-        tx_id: str = None,
         date: str = None,
         amount: str = None,
         category: str = None,
         name: str = None,
     ):
         self.card_id = card_id
-        self.tx_id = tx_id
+        self.tx_id = token_urlsafe(20)
         self.date = date
         self.amount = amount
         self.category = category

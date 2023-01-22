@@ -34,32 +34,42 @@ def add_virtualcard_to_db(card_id, number, cvv, expiry, address, zipcode):
 
 def remove_physicalcard(card_id):
     card = PhysicalCard.query.filter_by(card_id=card_id).first()
-    setattr(card, "active", False)
+    card.active = False
     db.session.commit()
 
 
 def remove_virtualcard(card_id):
     card = PhysicalCard.query.filter_by(card_id=card_id).first()
-    setattr(card, "active", False)
+    card.active = False
     db.session.commit()
 
 
 def choose_card_for_payment(category, amount, user_id, virtual_card_id):
     f = open("card_benefits.json")
     benefits = json.load(f)
-    virtual_card = VirtualCard.query.filter_by(id_=user_id, card_id=virtual_card_id).first()
+    virtual_card = VirtualCard.query.filter_by(
+        id_=user_id, card_id=virtual_card_id
+    ).first()
     credit = 0
     cards = heapq()
     if virtual_card.active:
         physical_card_ids = virtual_card.config["physical_ids"]
         if physical_card_ids:
             for id in physical_card_ids:
-                physical_card = PhysicalCard.query.filter_by(id_=user_id, card_id=id).first()
+                physical_card = PhysicalCard.query.filter_by(
+                    id_=user_id, card_id=id
+                ).first()
                 if physical_card.active:
-                    if physical_card.expiry: # TODO
+                    if physical_card.expiry:  # TODO
                         blob = physical_card.blob
                         credit += blob["limit"]
-                        heapq.heappush(cards, (benefits[blob["provider"]["version"][category]], physical_card))
+                        heapq.heappush(
+                            cards,
+                            (
+                                benefits[blob["provider"]["version"][category]],
+                                physical_card,
+                            ),
+                        )
                     else:
                         print(physical_card.card_id, "is expired!")
         else:
@@ -81,7 +91,7 @@ def choose_card_for_payment(category, amount, user_id, virtual_card_id):
         flag_modified(card, "blob")
     db.session.commit()
     print("purchase successful :D!")
-        
+
     # value = []
     # for card in physical_cards:
     #     if category in benefits[card.name]:
